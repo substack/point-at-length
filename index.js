@@ -41,8 +41,37 @@ Points.prototype._walk = function (pos, opts) {
             var n = 100;
             for (var j = 0; j <= n; j++) {
                 var t = j / n;
-                var x = xof(p, t);
-                var y = yof(p, t);
+                var x = xof_C(p, t);
+                var y = yof_C(p, t);
+                len += dist(cur[0], cur[1], x, y);
+                
+                cur[0] = x;
+                cur[1] = y;
+                
+                if (typeof pos === 'number' && len >= pos) {
+                    var dv = (len - pos) / (len - prev[2]);
+                    
+                    var npos = [
+                        cur[0] * (1 - dv) + prev[0] * dv,
+                        cur[1] * (1 - dv) + prev[1] * dv
+                    ];
+                    return { length: len, pos: npos };
+                }
+                prev[0] = cur[0];
+                prev[1] = cur[1];
+                prev[2] = len;
+            }
+        }
+        else if (p[0] === 'Q') {
+            prev[0] = cur[0];
+            prev[1] = cur[1];
+            prev[2] = len;
+            
+            var n = 100;
+            for (var j = 0; j <= n; j++) {
+                var t = j / n;
+                var x = xof_Q(p, t);
+                var y = yof_Q(p, t);
                 len += dist(cur[0], cur[1], x, y);
                 
                 cur[0] = x;
@@ -73,7 +102,7 @@ Points.prototype._walk = function (pos, opts) {
                 return { length: len, pos: npos };
             }
             cur[0] = p[1];
-            cur[0] = p[2];
+            cur[1] = p[2];
             prev[0] = cur[0];
             prev[1] = cur[1];
             prev[2] = len;
@@ -81,18 +110,31 @@ Points.prototype._walk = function (pos, opts) {
     }
     return { length: len / fudge, pos: cur };
     
-    function xof (p, t) {
+    function xof_C (p, t) {
         return Math.pow((1-t), 3) * cur[0]
             + 3 * Math.pow((1-t), 2) * t * p[1]
             + 3 * (1-t) * Math.pow(t, 2) * p[3]
             + Math.pow(t, 3) * p[5]
         ;
     }
-    function yof (p, t) {
+    function yof_C (p, t) {
         return Math.pow((1-t), 3) * cur[1]
             + 3 * Math.pow((1-t), 2) * t * p[2]
             + 3 * (1-t) * Math.pow(t, 2) * p[4]
             + Math.pow(t, 3) * p[6]
+        ;
+    }
+
+    function xof_Q (p, t) {
+        return Math.pow((1-t), 2) * cur[0]
+            + 2 * (1-t) * t * p[1]
+            + Math.pow(t, 2) * p[3]
+        ;
+    }
+    function yof_Q (p, t) {
+        return Math.pow((1-t), 2) * cur[1]
+            + 2 * (1-t) * t * p[2]
+            + Math.pow(t, 2) * p[4]
         ;
     }
 };
