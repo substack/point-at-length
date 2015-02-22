@@ -1,6 +1,6 @@
 {
   "name": "point-at-length",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "compute a point from an svg path string",
   "main": "index.js",
   "dependencies": {
