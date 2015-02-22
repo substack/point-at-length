@@ -67,8 +67,8 @@ Points.prototype._walk = function (pos, opts) {
             if (typeof pos === 'number' && len >= pos) {
                 var dv = (len - pos) / (len - prev[2]);
                 var npos = [
-                    cur[0] * (1 - dv) + p[0] * dv,
-                    cur[1] * (1 - dv) + p[1] * dv
+                    cur[0] * (1 - dv) + p[1] * dv,
+                    cur[1] * (1 - dv) + p[2] * dv
                 ];
                 return { length: len, pos: npos };
             }
