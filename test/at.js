@@ -68,15 +68,25 @@ var expected = [
 test('at', function (t) {
     t.plan(expected.length * 2);
     var pt = points(ptsstr);
+    var accuracy = [];
     
     for (var i = 0; i < expected.length; i++) {
         var ref = expected[i];
         var p = pt.at(i * 20);
         var x = p[0], y = p[1];
         var rx = ref[0], ry = ref[1];
+        accuracy.push(x / rx, y / ry);
         t.ok(cmp(x, rx, 0.1), x + ' ~~ ' + rx + ' ±10%');
         t.ok(cmp(y, ry, 0.1), y + ' ~~ ' + ry + ' ±10%');
     }
+    
+    var sum = 0;
+    for (var i = 0; i < accuracy.length; i++) {
+        sum += accuracy[i];
+    }
+    console.log('mean accuracy:',
+        Math.floor(sum / accuracy.length * 100 * 100) / 100, '%'
+    );
 });
 
 function cmp (found, wanted, tolerance) {
