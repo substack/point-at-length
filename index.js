@@ -92,17 +92,22 @@ Points.prototype._walk = function (pos, opts) {
             }
         }
         else if (p[0] === 'L') {
-            len += dist(cur[0], cur[1], p[1], p[2]);
+            prev[0] = cur[0];
+            prev[1] = cur[1];
+            prev[2] = len;
+
+            len   += dist(cur[0], cur[1], p[1], p[2]);
+            cur[0] = p[1];
+            cur[1] = p[2];
+
             if (typeof pos === 'number' && len >= pos) {
                 var dv = (len - pos) / (len - prev[2]);
                 var npos = [
-                    cur[0] * (1 - dv) + p[1] * dv,
-                    cur[1] * (1 - dv) + p[2] * dv
+                    cur[0] * (1 - dv) + prev[0] * dv,
+                    cur[1] * (1 - dv) + prev[1] * dv
                 ];
                 return { length: len, pos: npos };
             }
-            cur[0] = p[1];
-            cur[1] = p[2];
             prev[0] = cur[0];
             prev[1] = cur[1];
             prev[2] = len;
