@@ -6,7 +6,9 @@ module.exports = Points;
 
 function Points (path) {
     if (!(this instanceof Points)) return new Points(path);
-    this._path = abs(isarray(path) ? path : parse(path));
+    this._path = isarray(path) ? path : parse(path);
+    this._path = abs(this._path);
+    this._path = zToL(this._path);
 }
 
 Points.prototype.at = function (pos, opts) {
@@ -148,4 +150,26 @@ function dist (ax, ay, bx, by) {
     var x = ax - bx;
     var y = ay - by;
     return Math.sqrt(x*x + y*y);
+}
+
+// Convert 'Z' segments to 'L' segments
+function zToL(path){
+    var ret = [];
+    var startPoint = ['L',0,0];
+
+    for(var i=0, len=path.length; i<len; i++){
+        var pt = path[i];
+        switch(pt[0]){
+            case 'M':
+                startPoint = ['L', pt[1], pt[2]];
+                ret.push(pt);
+                break;
+            case 'Z':
+                ret.push(startPoint);
+                break;
+            default: 
+                ret.push(pt);
+        }
+    }
+    return ret;
 }
