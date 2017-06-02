@@ -8,7 +8,7 @@ function Points (path) {
     if (!(this instanceof Points)) return new Points(path);
     this._path = isarray(path) ? path : parse(path);
     this._path = abs(this._path);
-    this._path = zToL(this._path);
+    this._path = zvhToL(this._path);
 }
 
 Points.prototype.at = function (pos, opts) {
@@ -151,10 +151,11 @@ function dist (ax, ay, bx, by) {
     return Math.sqrt(x*x + y*y);
 }
 
-// Convert 'Z' segments to 'L' segments
-function zToL(path){
+// Convert 'Z', 'V' and 'H' segments to 'L' segments
+function zvhToL(path){
     var ret = [];
     var startPoint = ['L',0,0];
+    var last_point;
 
     for(var i=0, len=path.length; i<len; i++){
         var pt = path[i];
@@ -166,7 +167,15 @@ function zToL(path){
             case 'Z':
                 ret.push(startPoint);
                 break;
-            default: 
+            case 'H':
+                last_point = ret[ret.length - 1] || ['L',0,0];
+                ret.push( ['L', pt[1], last_point[last_point.length - 1]] );
+                break;
+            case 'V':
+                last_point = ret[ret.length - 1] || ['L',0,0];
+                ret.push( ['L', last_point[last_point.length - 2], pt[1]] );
+                break;
+            default:
                 ret.push(pt);
         }
     }
