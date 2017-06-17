@@ -8,8 +8,8 @@ function Points (path) {
     if (!(this instanceof Points)) return new Points(path);
     this._path = isarray(path) ? path : parse(path);
     this._path = abs(this._path);
-    this._path = longhand(this._path);
     this._path = zvhToL(this._path);
+    this._path = longhand(this._path);
 }
 
 Points.prototype.at = function (pos, opts) {
